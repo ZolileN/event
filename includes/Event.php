@@ -177,10 +177,10 @@ class Event
 						      '/{{eblast_link}}/', 
 						      '/{{eblast_path}}/');
 
-		$template = file_get_contents('eblast_template.php');
+		$template = file_get_contents(dirname(__FILE__) . '/eblast_template.php');
 		$html = preg_replace($patterns, $replacements, $template);
 
-		$this->_eblastHtml = $html;
+		$this->_eblastHtml = trim($html);
 	}
 
 	/*

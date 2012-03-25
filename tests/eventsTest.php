@@ -114,7 +114,23 @@ class EventTest extends PHPUnit_Framework_TestCase
 
 	public function testEblastHtml()
 	{
+		$event = new Event;
 
+		$event->setImg('eblast', 'eblast_img.jpg');
+		$event->setPath('eblast', '/mailings/events/2012/03/test-event');
+
+		$event->setEblastHtml();
+		$html = $event->getEblastHtml();
+		$testHtml = file_get_contents(dirname(__FILE__) . '/files/eblast_1.txt');
+		$testHtml = trim($testHtml);
+		$this->assertEquals($testHtml, $html);
+
+		$event->setLink('eblast', 'http://cnn.com');
+		$event->setEblastHtml();
+		$html = $event->getEblastHtml();
+		$testHtml = file_get_contents(dirname(__FILE__) . '/files/eblast_2.txt');
+		$testHtml = trim($testHtml);
+		$this->assertEquals($testHtml, $html);
 	}
 
 	public function testGetDirectory()
