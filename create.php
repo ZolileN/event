@@ -37,7 +37,7 @@ if(isset($_FILES["eblast_img"]) || isset($_FILES["banner_img"])) {
 			$bannerInfo = $event->getInfo('banner');
 
 			//Connect to the database and select the table
-			$con = mysql_connect("localhost","root","eagles7");
+			$con = mysql_connect("localhost","root","test1234");
 			if (!$con) {
 			  die('Could not connect: ' . mysql_error());
 			}

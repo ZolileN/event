@@ -140,7 +140,7 @@ class Event
 		$file_tmp_name = $file["tmp_name"];
 		$file_name = $file["name"];
 
-		move_uploaded_file($file_tmp_name, dirname(__FILE__) . "/../..$path/$file_name");
+		move_uploaded_file($file_tmp_name, dirname(__FILE__) . "/../../$path/$file_name");
 	}
 
 	/*
@@ -201,7 +201,7 @@ class Event
 	 */
 	protected function _createEblastFile($directory, $html)
 	{
-		$handle = fopen(dirname(__FILE__) . "/../..$directory/eblast.htm", 'w') or die("Can't open eblast file");
+		$handle = fopen(dirname(__FILE__) . "/../../$directory/eblast.htm", 'w') or die("Can't open eblast file");
 		fwrite($handle, $html);
 		fclose($handle);	
 	}
@@ -219,10 +219,11 @@ class Event
 	/*
 	 * Create directory and return string
 	 * 
+	 * @param  string $type Path type
 	 * @param  string $name Event name
 	 * @return string
 	 */
-	protected function _getDirectory($name)
+	protected function _getDirectory($type, $name)
 	{
 		$year = date('Y');
 		$month = date('m');
@@ -236,27 +237,60 @@ class Event
 		$nameUpdated = preg_replace("/[^a-zA-Z0-9\s]/", "", strtolower($name));
 		$eventDir = str_replace(" ", "-", $nameUpdated);
 
-		if(!file_exists(dirname(__FILE__) . "/../../mailings")) {
-			$this->_createDirectory("/../../mailings");
+		if(empty($type) || $type !== 'eblast' && $type !== 'banner') {
+			$this->setStatus("Event is neither eblast or banner");
+			return false;
 		}
 
-		if(!file_exists(dirname(__FILE__) . "/../../mailings/events")) {
-			$this->_createDirectory("/../../mailings/events");
+		if($type === 'eblast') {
+
+			if(!file_exists(dirname(__FILE__) . "/../../mailings")) {
+				$this->_createDirectory("/../../mailings");
+			}
+
+			if(!file_exists(dirname(__FILE__) . "/../../mailings/events")) {
+				$this->_createDirectory("/../../mailings/events");
+			}
+
+			if(!file_exists(dirname(__FILE__) . "/../../mailings/events/$year")) {
+				$this->_createDirectory("/../../mailings/events/$year");
+			}
+
+			if(!file_exists(dirname(__FILE__) . "/../../mailings/events/$year/$month")) {
+				$this->_createDirectory("/../../mailings/events/$year/$month");
+			}
+
+			if(!file_exists(dirname(__FILE__) . "/../../mailings/events/$year/$month/$eventDir")) {
+				$this->_createDirectory("/../../mailings/events/$year/$month/$eventDir");
+			}
+
+			$directory = "mailings/events/$year/$month/$eventDir";
+
 		}
 
-		if(!file_exists(dirname(__FILE__) . "/../../mailings/events/$year")) {
-			$this->_createDirectory("/../../mailings/events/$year");
+		if($type === 'banner') {
+
+			if(!file_exists(dirname(__FILE__) . "/../../images")) {
+				$this->_createDirectory("/../../images");
+			}
+
+			if(!file_exists(dirname(__FILE__) . "/../../images/events")) {
+				$this->_createDirectory("/../../images/events");
+			}
+
+			if(!file_exists(dirname(__FILE__) . "/../../images/events/$year")) {
+				$this->_createDirectory("/../../images/events/$year");
+			}
+
+			if(!file_exists(dirname(__FILE__) . "/../../images/events/$year/$eventDir")) {
+				$this->_createDirectory("/../../images/events/$year/$eventDir");
+			}
+
+			$directory = "images/events/$year/$eventDir";
+
 		}
 
-		if(!file_exists(dirname(__FILE__) . "/../../mailings/events/$year/$month")) {
-			$this->_createDirectory("/../../mailings/events/$year/$month");
-		}
-
-		if(!file_exists(dirname(__FILE__) . "/../../mailings/events/$year/$month/$eventDir")) {
-			$this->_createDirectory("/../../mailings/events/$year/$month/$eventDir");
-		}
-
-		$directory = "/mailings/events/$year/$month/$eventDir";
+		$this->setPath($type, $directory);
 
 		return $directory;
 	}
@@ -278,30 +312,45 @@ class Event
 
 		if (isset($eblastFile["type"]) && $eblastFile["type"] !== "image/jpeg" ||
 			isset($bannerFile["type"]) && $bannerFile["type"] !== "image/jpeg") {
+
 			$message = "The files uploaded must be jpeg format.";
 			$this->setStatus($message);
 
 			return false;
-		} else {
-			$directory = $this->_getDirectory($name);
 
-			$this->setPath('eblast', $directory);
-			$this->setPath('banner', $directory);
+		} else {
 
 			if(!empty($bannerFile)) {
+
+				$bannerDir = $this->_getDirectory('banner', $name);
+
+				if($bannerDir === false) {
+					return false;
+				}
+
 				$this->_uploadFile('banner');
+
 			}
 
- 			if(!empty($eblastFile)) {
-				$this->_uploadFile('eblast');
+			if(!empty($eblastFile)) {
 
+				$eblastDir = $this->_getDirectory('eblast', $name);
+
+				if($eblastDir === false) {
+					return false;
+				}
+
+				$this->_uploadFile('eblast');
 				$this->setEblastHtml();
 				$html = $this->getEblastHtml();
-				$handle = $this->_createEblastFile($directory, $html);
+				$handle = $this->_createEblastFile($eblastDir, $html);
+
 			}
 
 			$message = "File successfully uploaded.";
 			$this->setStatus($message);
+
 		}
+
 	}
 }

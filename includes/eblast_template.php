@@ -7,7 +7,7 @@
 <body style="background-color:#FFF">
 <table width="612" border="0" align="center" cellpadding="0" cellspacing="0">
   <tr>
-    <td><a href="{{eblast_link}}" target="_blank"><img src="http://www.ad2orlando.org{{eblast_path}}/{{eblast_img}}" alt="Click Here to for More Info" border="0" /></a></td>
+    <td><a href="{{eblast_link}}" target="_blank"><img src="http://www.ad2orlando.org/{{eblast_path}}/{{eblast_img}}" alt="Click Here to for More Info" border="0" /></a></td>
   </tr>
 </table>
 </body>

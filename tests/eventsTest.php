@@ -117,7 +117,7 @@ class EventTest extends PHPUnit_Framework_TestCase
 		$event = new Event;
 
 		$event->setImg('eblast', 'eblast_img.jpg');
-		$event->setPath('eblast', '/mailings/events/2012/03/test-event');
+		$event->setPath('eblast', 'mailings/events/2012/03/test-event');
 
 		$event->setEblastHtml();
 		$html = $event->getEblastHtml();
@@ -145,11 +145,11 @@ class EventTest extends PHPUnit_Framework_TestCase
 		$getDirectory = $refEvent->getMethod('_getDirectory');
 		$getDirectory->setAccessible("true");
 
-		$testDirectory = $getDirectory->invoke($event, 'Test Event');
+		$testDirectory = $getDirectory->invoke($event, 'eblast', 'Test Event');
 
 		$year = date('Y');
 		$month = date('m');
-		$directory = "/mailings/events/$year/$month/test-event";
+		$directory = "mailings/events/$year/$month/test-event";
 
 		$this->assertEquals($directory, $testDirectory);
 	}

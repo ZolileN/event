@@ -2,7 +2,7 @@
 
 require_once dirname(__FILE__) . '/includes/Event.php';
 
-$con = mysql_connect("localhost","root","eagles7");
+$con = mysql_connect("localhost","root","test1234");
 if (!$con) {
   die('Could not connect: ' . mysql_error());
 }
@@ -43,13 +43,13 @@ while($row = mysql_fetch_array($result)) {
 	if(!empty($row['banner_image'])) {
 		echo $row['name'] . "<br>";
 		echo "<p>Banner Image: </p>";
-		echo "<p><a href=\"http://localhost/ad2orlando.org" . $row['banner_path'] . "/" . $row['banner_image'] . "\" target=\"_blank\"><img src=\"http://localhost/ad2orlando.org" . $row['banner_path'] . "/" . $row['banner_image'] . "\" width=\"125\"></a></p>";
+		echo "<p><a href=\"http://localhost/ad2orlando.org/" . $row['banner_path'] . "/" . $row['banner_image'] . "\" target=\"_blank\"><img src=\"http://localhost/ad2orlando.org/" . $row['banner_path'] . "/" . $row['banner_image'] . "\" width=\"125\"></a></p>";
 		echo "<p>Banner Link: <a href=\"" . $row['banner_link'] . "\" target=\"_blank\">" . $row['banner_link'] . "</a></p>";
 	}
 
 	if(!empty($row['eblast_image'])) {
 		echo "<p>Eblast Image: </p>";
-		echo "<p><a href=\"http://localhost/ad2orlando.org" . $row['eblast_path'] . "/" . $row['eblast_image'] . "\" target=\"_blank\"><img src=\"http://localhost/ad2orlando.org" . $row['eblast_path'] . "/" . $row['eblast_image'] . "\" width=\"125\"></a></p>";
+		echo "<p><a href=\"http://localhost/ad2orlando.org/" . $row['eblast_path'] . "/" . $row['eblast_image'] . "\" target=\"_blank\"><img src=\"http://localhost/ad2orlando.org/" . $row['eblast_path'] . "/" . $row['eblast_image'] . "\" width=\"125\"></a></p>";
 		echo "<p>Eblast Link: <a href=\"http://localhost/ad2orlando.org" . $row['eblast_link'] . "\" target=\"_blank\">" . $row['eblast_link'] . "</a></p>";
 
 		echo "Copy this code and paste into MyEmma:<br><br>";
