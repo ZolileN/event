@@ -5,7 +5,7 @@ class Event
 	protected $_eblastFile;
 	protected $_eblastImg;
 	protected $_eblastPath;
-	protected $_eblastLink;
+	protected $_eblastLink = 'http://ad2orlando.org';
 	protected $_eblastHtml;
 	protected $_bannerFile;
 	protected $_bannerImg;

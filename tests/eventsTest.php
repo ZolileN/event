@@ -41,7 +41,7 @@ class EventTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($testLink, $link);
 	}
 
-	public function testGetInfo()
+	public function testGetBannerInfo()
 	{
 		$event = new Event;
 
@@ -69,6 +69,36 @@ class EventTest extends PHPUnit_Framework_TestCase
 						  'path' => $path);
 
 		$this->assertEquals($testInfo, $bannerInfo);
+	}
+
+	public function testGetEblastInfo()
+	{
+		$event = new Event;
+
+		$imgFile = array('name' => 'test.jpg');
+		$event->setFile('eblast', $imgFile);
+
+		$path = '/images/events/2012';
+		$event->setPath('eblast', $path);
+
+		$eblastInfo = $event->getInfo('eblast');
+
+		$testInfo = array('img'  => $imgFile['name'],
+						  'link' => 'http://ad2orlando.org',
+						  'path' => $path);
+
+		$this->assertEquals($testInfo, $eblastInfo);
+
+		$link = 'http://test.com';
+		$event->setLink('eblast', $link);
+
+		$eblastInfo = $event->getInfo('eblast');
+
+		$testInfo = array('img'  => $imgFile['name'],
+						  'link' => $link,
+						  'path' => $path);
+
+		$this->assertEquals($testInfo, $eblastInfo);
 	}
 
 	public function testStatus()
