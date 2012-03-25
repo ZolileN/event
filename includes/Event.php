@@ -194,33 +194,69 @@ class Event
 	}
 
 	/*
-	 * Create directory and return string
+	 * Create eBlast file for future use
+	 * 
+	 * @param string $directory	Path to where the file is created 
+	 * @param string $html		HTML to write to the file 
+	 */
+	protected function _createEblastFile($directory, $html)
+	{
+		$handle = fopen(dirname(__FILE__) . "/../..$directory/eblast.htm", 'w') or die("Can't open eblast file");
+		fwrite($handle, $html);
+		fclose($handle);	
+	}
+
+	/*
+	 * Create specified directory
 	 * 
 	 * @return  string
 	 */
-	protected function _getDirectory()
+	protected function _createDirectory($path)
+	{
+		mkdir(dirname(__FILE__) . $path, 0777);
+	}
+
+	/*
+	 * Create directory and return string
+	 * 
+	 * @param  string $name Event name
+	 * @return string
+	 */
+	protected function _getDirectory($name)
 	{
 		$year = date('Y');
 		$month = date('m');
 		$day = date('d');
 
+		if(empty($name)) {
+			$this->setStatus("Event name was not submitted.");
+			return false;
+		}
+
+		$nameUpdated = preg_replace("/[^a-zA-Z0-9\s]/", "", strtolower($name));
+		$eventDir = str_replace(" ", "-", $nameUpdated);
+
 		if(!file_exists(dirname(__FILE__) . "/../../mailings")) {
-			mkdir(dirname(__FILE__) . "/../../mailings", 0777);
+			$this->_createDirectory("/../../mailings");
 		}
 
 		if(!file_exists(dirname(__FILE__) . "/../../mailings/events")) {
-			mkdir(dirname(__FILE__) . "/../../mailings/events", 0777);
+			$this->_createDirectory("/../../mailings/events");
 		}
 
 		if(!file_exists(dirname(__FILE__) . "/../../mailings/events/$year")) {
-			mkdir(dirname(__FILE__) . "/../../mailings/events/$year", 0777);
+			$this->_createDirectory("/../../mailings/events/$year");
 		}
 
 		if(!file_exists(dirname(__FILE__) . "/../../mailings/events/$year/$month")) {
-			mkdir(dirname(__FILE__) . "/../../mailings/events/$year/$month", 0777);
+			$this->_createDirectory("/../../mailings/events/$year/$month");
 		}
 
-		$directory = "/mailings/events/$year/$month";
+		if(!file_exists(dirname(__FILE__) . "/../../mailings/events/$year/$month/$eventDir")) {
+			$this->_createDirectory("/../../mailings/events/$year/$month/$eventDir");
+		}
+
+		$directory = "/mailings/events/$year/$month/$eventDir";
 
 		return $directory;
 	}
@@ -228,24 +264,26 @@ class Event
 	/*
 	 * Create a new event
 	 * 
+	 * @param string $name Event name 
 	 */
-	public function createEvent()
+	public function createEvent($name)
 	{
 		$eblastFile = $this->getFile('eblast');
 		$bannerFile = $this->getFile('banner');
 
 		if(empty($eblastFile) && empty($bannerFile)) {
+			$message = "No images were submitted.";
 			return false;
 		}
 
-		if (isset($bannerFile["type"]) && $bannerFile["type"] !== "image/jpeg" ||
-			isset($eblastFile["type"]) && $eblastFile["type"] !== "image/jpeg") {
+		if (isset($eblastFile["type"]) && $eblastFile["type"] !== "image/jpeg" ||
+			isset($bannerFile["type"]) && $bannerFile["type"] !== "image/jpeg") {
 			$message = "The files uploaded must be jpeg format.";
 			$this->setStatus($message);
 
 			return false;
 		} else {
-			$directory = $this->_getDirectory();
+			$directory = $this->_getDirectory($name);
 
 			$this->setPath('eblast', $directory);
 			$this->setPath('banner', $directory);
@@ -259,9 +297,7 @@ class Event
 
 				$this->setEblastHtml();
 				$html = $this->getEblastHtml();
-				$handle = fopen(dirname(__FILE__) . "/../..$directory/eblast.htm", 'w') or die("Can't open eblast file");
-				fwrite($handle, $html);
-				fclose($handle);	
+				$handle = $this->_createEblastFile($directory, $html);
 			}
 
 			$message = "File successfully uploaded.";

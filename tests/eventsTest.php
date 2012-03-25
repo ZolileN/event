@@ -89,25 +89,31 @@ class EventTest extends PHPUnit_Framework_TestCase
 
 	public function testGetDirectory()
 	{
-		$event = new Event;
+		$event = $this->getMock('Event', array('_createDirectory'));
+
+        $event->expects($this->any())
+              ->method('_createDirectory')
+              ->will($this->returnValue(null));
 
 		$refEvent = new ReflectionClass($event);
 		$getDirectory = $refEvent->getMethod('_getDirectory');
 		$getDirectory->setAccessible("true");
 
-		$testDirectory = $getDirectory->invoke($event);
+		$testDirectory = $getDirectory->invoke($event, 'Test Event');
 
 		$year = date('Y');
 		$month = date('m');
-		$directory = "/mailings/events/$year/$month";
+		$directory = "/mailings/events/$year/$month/test-event";
 
 		$this->assertEquals($directory, $testDirectory);
 	}
 
 	public function testCreateEvent()
 	{
-		//$event = new Event;
-		$event = $this->getMock('Event', array('_uploadFile', 'setEblastHtml'));
+		//Create mock object
+		$event = $this->getMock('Event', array('_uploadFile', 'setEblastHtml', '_createDirectory', '_createEblastFile'));
+
+		//Stub out methods to return specified values
         $event->expects($this->any())
               ->method('_uploadFile')
               ->will($this->returnValue(null));
@@ -116,7 +122,15 @@ class EventTest extends PHPUnit_Framework_TestCase
               ->method('setEblastHtml')
               ->will($this->returnValue(null));
 
-		$this->assertFalse($event->createEvent());
+        $event->expects($this->any())
+              ->method('_createDirectory')
+              ->will($this->returnValue(null));
+
+        $event->expects($this->any())
+              ->method('_createEblastFile')
+              ->will($this->returnValue(null));
+
+		$this->assertFalse($event->createEvent('Test Event'));
 
 		$imgFile = array('name'		=> 'test.gif',
 						 'tmp_name' => '12345.gif',
@@ -125,7 +139,7 @@ class EventTest extends PHPUnit_Framework_TestCase
 		$event->setFile('banner', $imgFile);
 		$status = "The files uploaded must be jpeg format.";
 
-		$this->assertFalse($event->createEvent());
+		$this->assertFalse($event->createEvent('Test Event'));
 		$this->assertEquals($status, $event->getStatus());
 
 		$imgFile = array('name'		=> 'test.jpg',
@@ -133,7 +147,7 @@ class EventTest extends PHPUnit_Framework_TestCase
 						 'type'		=> 'image/jpeg');
 
 		$event->setFile('banner', $imgFile);
-		$event->createEvent();
+		$event->createEvent('Test Event');
 		$status = "File successfully uploaded.";
 
 		$this->assertEquals($status, $event->getStatus());
@@ -142,7 +156,7 @@ class EventTest extends PHPUnit_Framework_TestCase
 						 'tmp_name' => '12345.jpg',
 						 'type'		=> 'image/jpeg');
 		$event->setFile('eblast', $imgFile);
-		$event->createEvent();
+		$event->createEvent('Test Event');
 
 		$this->assertEquals($status, $event->getStatus());
 	}

@@ -27,7 +27,7 @@ if(isset($_FILES["eblast_img"]) || isset($_FILES["banner_img"])) {
 			$event->setLink($type, $_POST[$type . "_link"]);
 		}
 
-		$created = $event->createEvent();
+		$created = $event->createEvent($_POST[event_name]);
 		$message = $event->getStatus();
 
 		if($created !== false) {
