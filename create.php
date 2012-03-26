@@ -1,6 +1,7 @@
 <?php
 
 require_once dirname(__FILE__) . '/includes/Event.php';
+require_once dirname(__FILE__) . '/includes/Database.php';
 
 $update = array();
 
@@ -31,55 +32,23 @@ if(isset($_FILES["eblast_img"]) || isset($_FILES["banner_img"])) {
 		$message = $event->getStatus();
 
 		if($created !== false) {
-
 			//Get values to be uploaded to the database
 			$eblastInfo = $event->getInfo('eblast');
 			$bannerInfo = $event->getInfo('banner');
 
-			//Connect to the database and select the table
-			$con = mysql_connect("localhost","root","test1234");
-			if (!$con) {
-			  die('Could not connect: ' . mysql_error());
-			}
-
-			mysql_select_db("ad2orlando", $con);
-
 			//Set values in an array that will be used to create sql statement
-			$values = array('eblast_path'  => $eblastInfo['path'], 
+			$values = array('name'		   => $_POST['event_name'],
+							'date'		   => date('Y-m-d H:i:s'), 
+							'eblast_path'  => $eblastInfo['path'], 
+							'eblast_file'  => $eblastInfo['file'], 
 							'eblast_link'  => $eblastInfo['link'], 
 							'eblast_image' => $eblastInfo['img'], 
 							'banner_path'  => $bannerInfo['path'], 
 							'banner_link'  => $bannerInfo['link'], 
 							'banner_image' => $bannerInfo['img']);
-
-			//Begin the insert sql string
-			$sql = "INSERT INTO events ";
-
-			//Create two seperate strings for columns and values
-			$sql_column .= "name, date, ";
-			$sql_value  .= "'$_POST[event_name]', '" . date("Y-m-d H:i:s") . "', ";
-
-			//Loop through array and add to column/value strings
-			foreach($values as $key => $value) {
-				if(!empty($value)) {
-					$escaped = mysql_real_escape_string($value);
-					$sql_column .= "$key, ";
-					$sql_value  .= "'$escaped', ";
-				}
-			}
-
-			//Remove extra comma and space from the end of the column/value strings
-			$sql_column = preg_replace('/, $/', '', $sql_column);
-			$sql_value = preg_replace('/, $/', '', $sql_value);
-
-			//Add column/values to the final sql string
-			$sql .= "($sql_column) VALUES ($sql_value)";
-
-			//Submit INSERT query
-			mysql_query($sql);
-
-			//Close database connection
-			mysql_close($con);
+	
+			$database = new Database();
+			$database->insert($values);
 		}
 	}
 }
@@ -119,6 +88,7 @@ if($created !== false) {
 		echo "<p>Eblast Image: </p>";
 		echo "<p><a href=\"http://localhost/ad2orlando.org/" . $eblastInfo['path'] . "/" . $eblastInfo['img'] . "\" target=\"_blank\"><img src=\"http://localhost/ad2orlando.org/" . $eblastInfo['path'] . "/" . $eblastInfo['img'] . "\" width=\"125\"></a></p>";
 		echo "<p>Eblast Link: <a href=\"" . $eblastInfo['link'] . "\" target=\"_blank\">" . $eblastInfo['link'] . "</a></p>";
+		echo "<p>Eblast File: <a href=\"http://localhost/ad2orlando.org/" . $eblastInfo['path'] . "/eblast.htm\" target=\"_blank\">Click Here</a></p>";
 
 		echo "Copy this code and paste into MyEmma:<br><br>";
 		echo htmlspecialchars($event->getEblastHtml());

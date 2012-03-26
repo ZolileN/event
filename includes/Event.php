@@ -95,8 +95,10 @@ class Event
 	 */
 	public function setLink($type, $link)
 	{
-		$property = "_". $type . "Link";
-		$this->$property = $link;	
+		if(!empty($link)) {
+			$property = "_". $type . "Link";
+			$this->$property = $link;
+		}	
 	}
 
 	/*

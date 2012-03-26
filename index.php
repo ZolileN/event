@@ -1,28 +1,16 @@
 <?php
 
-$con = mysql_connect("localhost","root","test1234");
-if (!$con) {
-  die('Could not connect: ' . mysql_error());
-}
+require_once dirname(__FILE__) . '/includes/Database.php';
 
-mysql_select_db("ad2orlando", $con);
+$database = new Database();
 
 if(isset($_GET['delete']) && isset($_GET['id'])) {
-	$sql = "DELETE FROM events WHERE id = $_GET[id]";
-
-	mysql_query($sql);
+	$database->delete($_GET['id']);
 }
 
-$sql = "SELECT * FROM events ORDER BY date DESC";
-
-//Submit INSERT query
-$result = mysql_query($sql);
-
-//Close database connection
-mysql_close($con);
+$result = $database->select();
 
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -35,7 +23,7 @@ mysql_close($con);
 <?php
 
 while($row = mysql_fetch_array($result)) {
-echo "[ <a href=\"details.php?id=" . $row['id'] . "\">DETAILS</a> ]" . $row['name'] . " " . $row['date'] . "<br>";
+echo "[ <a href=\"details.php?id=" . $row['id'] . "\">DETAILS</a> ] " . $row['name'] . " " . $row['date'] . "<br>";
 }
 
 ?>

@@ -1,22 +1,10 @@
 <?php
 
 require_once dirname(__FILE__) . '/includes/Event.php';
+require_once dirname(__FILE__) . '/includes/Database.php';
 
-$con = mysql_connect("localhost","root","test1234");
-if (!$con) {
-  die('Could not connect: ' . mysql_error());
-}
-
-mysql_select_db("ad2orlando", $con);
-
-$sql = "SELECT * FROM events WHERE id = $_GET[id]";
-
-//Submit INSERT query
-$result = mysql_query($sql);
-
-//Close database connection
-mysql_close($con);
-
+$database = new Database();
+$result = $database->select($_GET['id']);
 ?>
 <!DOCTYPE html>
 <html>
@@ -51,6 +39,7 @@ while($row = mysql_fetch_array($result)) {
 		echo "<p>Eblast Image: </p>";
 		echo "<p><a href=\"http://localhost/ad2orlando.org/" . $row['eblast_path'] . "/" . $row['eblast_image'] . "\" target=\"_blank\"><img src=\"http://localhost/ad2orlando.org/" . $row['eblast_path'] . "/" . $row['eblast_image'] . "\" width=\"125\"></a></p>";
 		echo "<p>Eblast Link: <a href=\"http://localhost/ad2orlando.org" . $row['eblast_link'] . "\" target=\"_blank\">" . $row['eblast_link'] . "</a></p>";
+		echo "<p>Eblast File: <a href=\"http://localhost/ad2orlando.org/" . $row['eblast_path'] . "/eblast.htm\" target=\"_blank\">Click Here</a></p>";
 
 		echo "Copy this code and paste into MyEmma:<br><br>";
 		echo htmlspecialchars($event->getEblastHtml());
