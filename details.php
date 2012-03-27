@@ -44,8 +44,18 @@ while($row = mysql_fetch_array($result)) {
 		echo "Copy this code and paste into MyEmma:<br><br>";
 		echo htmlspecialchars($event->getEblastHtml());
 	}
-}
 
+?>
+<form name="event" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
+	Event Name: <input type="text" name="event_name" value="<?php echo $row['name']; ?>" /><br>
+	eBlast File: <input type="file" name="eblast_img" /><br>
+	eBlast Link: <input type="text" name="eblast_link" value="<?php if($row['banner_link']) { echo $row['banner_link']; } ?>" /><br>
+	Banner File: <input type="file" name="banner_img" /><br>
+	Banner Link: <input type="text" name="banner_link" value="<?php if($row['eblast_link']) { echo $row['eblast_link']; } ?>" /><br>
+	<input type="submit" value="Submit" />
+</form>
+<?php
+}
 ?>
 
 </body>

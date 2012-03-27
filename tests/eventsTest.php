@@ -39,6 +39,13 @@ class EventTest extends PHPUnit_Framework_TestCase
 		$testLink = $event->getLink('eblast');
 
 		$this->assertEquals($testLink, $link);
+
+		$link = 'test.com';
+		$event->setLink('eblast', $link);
+		
+		$testLink = $event->getLink('eblast');
+
+		$this->assertEquals('http://test.com', $testLink);
 	}
 
 	public function testGetBannerInfo()

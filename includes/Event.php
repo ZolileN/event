@@ -96,6 +96,11 @@ class Event
 	public function setLink($type, $link)
 	{
 		if(!empty($link)) {
+
+			if(!preg_match('/^http:\/\//', $link)) {
+				$link = 'http://' . $link;
+			}
+
 			$property = "_". $type . "Link";
 			$this->$property = $link;
 		}	
