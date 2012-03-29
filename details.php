@@ -4,7 +4,32 @@ require_once dirname(__FILE__) . '/includes/Event.php';
 require_once dirname(__FILE__) . '/includes/Database.php';
 
 $database = new Database();
-$result = $database->select($_GET['id']);
+$event = new Event();
+
+if(isset($_POST['id'])) {
+	$update = array();
+	$result = $database->select($_POST['id']);
+	$row = mysql_fetch_array($result);
+
+	foreach($_POST as $key => $value) {
+		if($value !== $row[$key]) {
+			$update[$key] = $value;
+		}
+	}
+
+	foreach($_FILES as $name => $values) {
+		$type = preg_replace('/_image$/', '', $name);
+		$event->setFile($type, $_FILES[$name]);
+	}
+
+	if(!empty($update)) {
+		$database->update($update, $_POST['id']);
+	}
+
+	$result = $database->select($_POST['id']);
+} else {
+	$result = $database->select($_GET['id']);
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -22,11 +47,10 @@ if(!isset($_GET['delete'])) {
 }
 
 while($row = mysql_fetch_array($result)) {
-	$event = new Event();
 	$event->setImg('eblast', $row['eblast_image']);
 	$event->setPath('eblast', $row['eblast_path']);
 	$event->setLink('eblast', $row['eblast_link']);
-	$event->setEblastHtml();;
+	$event->setEblastHtml();
 
 	if(!empty($row['banner_image'])) {
 		echo $row['name'] . "<br>";
@@ -47,11 +71,12 @@ while($row = mysql_fetch_array($result)) {
 
 ?>
 <form name="event" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
-	Event Name: <input type="text" name="event_name" value="<?php echo $row['name']; ?>" /><br>
-	eBlast File: <input type="file" name="eblast_img" /><br>
-	eBlast Link: <input type="text" name="eblast_link" value="<?php if($row['banner_link']) { echo $row['banner_link']; } ?>" /><br>
-	Banner File: <input type="file" name="banner_img" /><br>
-	Banner Link: <input type="text" name="banner_link" value="<?php if($row['eblast_link']) { echo $row['eblast_link']; } ?>" /><br>
+	Event Name: <input type="text" name="name" value="<?php echo $row['name']; ?>" /><br>
+	eBlast File: <input type="file" name="eblast_image" /><br>
+	eBlast Link: <input type="text" name="eblast_link" value="<?php if($row['eblast_link']) { echo $row['eblast_link']; } ?>" /><br>
+	Banner File: <input type="file" name="banner_image" /><br>
+	Banner Link: <input type="text" name="banner_link" value="<?php if($row['banner_link']) { echo $row['banner_link']; } ?>" /><br>
+	<input type="hidden" name="id" value="<?php echo $row['id']; ?>" />
 	<input type="submit" value="Submit" />
 </form>
 <?php

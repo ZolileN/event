@@ -66,6 +66,41 @@ class Database extends Event
 		mysql_close($con);		
 	}
 
+	public function update($values, $id) 
+	{
+		//Connect to the database and select the table
+		$con = mysql_connect("localhost","root","test1234");
+		if (!$con) {
+		  die('Could not connect: ' . mysql_error());
+		}
+
+		mysql_select_db("ad2orlando", $con);
+
+		//Begin the insert sql string
+		$sql = "UPDATE events SET ";
+
+		//Loop through values array
+		foreach($values as $key => $value) {
+			if(!empty($value)) {
+				$escaped = mysql_real_escape_string($value);
+				//Create two seperate strings for columns and values
+				$sql_set .= "$key='$escaped', ";
+			}
+		}
+
+		//Remove extra comma and space from the end of the column/value strings
+		$sql_set = preg_replace('/, $/', '', $sql_set);
+
+		//Add column/values to the final sql string
+		$sql .= "$sql_set WHERE id=$id";
+
+		//Submit INSERT query
+		mysql_query($sql);
+
+		//Close database connection
+		mysql_close($con);		
+	}
+
 	public function delete($id) 
 	{
 		$con = mysql_connect("localhost","root","test1234");

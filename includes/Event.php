@@ -360,4 +360,45 @@ class Event
 		}
 
 	}
+
+	/*
+	 * Update a current event
+	 * 
+	 * @param string $db   Values from the database 
+	 * @param string $form Values submitted in the form
+	 */
+	public function updateEvent($updates)
+	{
+		$eblastFile = $this->getFile('eblast');
+		$bannerFile = $this->getFile('banner');
+
+		if(!empty($bannerFile)) {
+
+			$bannerDir = $this->_getDirectory('banner', $name);
+
+			if($bannerDir === false) {
+				return false;
+			}
+
+			$this->_uploadFile('banner');
+
+		}
+
+		if(!empty($eblastFile)) {
+
+			$eblastDir = $this->_getDirectory('eblast', $name);
+
+			if($eblastDir === false) {
+				return false;
+			}
+
+			$this->_uploadFile('eblast');
+			$this->setEblastHtml();
+			$html = $this->getEblastHtml();
+			$handle = $this->_createEblastFile($eblastDir, $html);
+
+			}
+	
+
+	}
 }
