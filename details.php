@@ -18,9 +18,15 @@ if(isset($_POST['id'])) {
 	}
 
 	foreach($_FILES as $name => $values) {
-		$type = preg_replace('/_image$/', '', $name);
-		$event->setFile($type, $_FILES[$name]);
+		if(!empty($values['name'])) {
+			$type = preg_replace('/_image$/', '', $name);
+			$event->setFile($type, $_FILES[$name]);
+			$event->setPath($type, $row[$type . '_path']);
+			$update[$name] = $values['name'];
+		}
 	}
+
+	$event->createEvent($_FILES[$name]);
 
 	if(!empty($update)) {
 		$database->update($update, $_POST['id']);

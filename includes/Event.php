@@ -151,6 +151,29 @@ class Event
 	}
 
 	/*
+	 * Parses and uploads file
+	 * 
+	 * @param string $type 
+	 * @param array $name 
+	 */
+	protected function _parseFile($type, $name) {
+		$path = $this->getPath($type, $name);
+
+		if($path === false) {
+			return false;
+		}
+
+		$this->_uploadFile($type);
+
+		if($type === 'email') {
+			$this->setEblastHtml();
+			$html = $this->getEblastHtml();
+			$handle = $this->_createEblastFile($directory, $html);	
+		}
+
+	}
+
+	/*
 	 * Set status property
 	 * 
 	 * @param  string $status
@@ -326,32 +349,12 @@ class Event
 			return false;
 
 		} else {
-
 			if(!empty($bannerFile)) {
-
-				$bannerDir = $this->_getDirectory('banner', $name);
-
-				if($bannerDir === false) {
-					return false;
-				}
-
-				$this->_uploadFile('banner');
-
+				$this->_parseFile('banner', $name);
 			}
 
 			if(!empty($eblastFile)) {
-
-				$eblastDir = $this->_getDirectory('eblast', $name);
-
-				if($eblastDir === false) {
-					return false;
-				}
-
-				$this->_uploadFile('eblast');
-				$this->setEblastHtml();
-				$html = $this->getEblastHtml();
-				$handle = $this->_createEblastFile($eblastDir, $html);
-
+				$this->_parseFile('eblast', $name);
 			}
 
 			$message = "File successfully uploaded.";
@@ -361,44 +364,4 @@ class Event
 
 	}
 
-	/*
-	 * Update a current event
-	 * 
-	 * @param string $db   Values from the database 
-	 * @param string $form Values submitted in the form
-	 */
-	public function updateEvent($updates)
-	{
-		$eblastFile = $this->getFile('eblast');
-		$bannerFile = $this->getFile('banner');
-
-		if(!empty($bannerFile)) {
-
-			$bannerDir = $this->_getDirectory('banner', $name);
-
-			if($bannerDir === false) {
-				return false;
-			}
-
-			$this->_uploadFile('banner');
-
-		}
-
-		if(!empty($eblastFile)) {
-
-			$eblastDir = $this->_getDirectory('eblast', $name);
-
-			if($eblastDir === false) {
-				return false;
-			}
-
-			$this->_uploadFile('eblast');
-			$this->setEblastHtml();
-			$html = $this->getEblastHtml();
-			$handle = $this->_createEblastFile($eblastDir, $html);
-
-			}
-	
-
-	}
 }
