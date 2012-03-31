@@ -28,7 +28,7 @@ if(isset($_FILES["eblast_img"]) || isset($_FILES["banner_img"])) {
 			$event->setLink($type, $_POST[$type . "_link"]);
 		}
 
-		$created = $event->createEvent($_POST[event_name]);
+		$created = $event->upload($_POST['event_name']);
 		$message = $event->getStatus();
 
 		if($created !== false) {
@@ -79,17 +79,21 @@ if(isset($message) && !empty($message)) {
 <?php
 if($created !== false) {
 	if(in_array('banner', $update)) {
-		echo "<p>Banner Image: </p>";
-		echo "<p><a href=\"http://localhost/ad2orlando.org/" . $bannerInfo['path'] . "/" . $bannerInfo['img'] . "\" target=\"_blank\"><img src=\"http://localhost/ad2orlando.org/" . $bannerInfo['path'] . "/" . $bannerInfo['img'] . "\" width=\"125\"></a></p>";
-		echo "<p>Banner Link: <a href=\"" . $bannerInfo['link'] . "\" target=\"_blank\">" . $bannerInfo['link'] . "</a></p>";
+?>
+		<p>Banner Image: </p>
+		<p><a href="http://localhost/ad2orlando.org/<?php echo $bannerInfo['path'] . "/" . $bannerInfo['img']; ?>" target="_blank"><img src="http://localhost/ad2orlando.org/<?php echo $bannerInfo['path'] . "/" . $bannerInfo['img']; ?>" width="125"></a></p>
+		<p>Banner Link: <a href="<?php echo $bannerInfo['link']; ?>" target="_blank"><?php echo $bannerInfo['link']; ?></a></p>
+<?php
 	}
 
 	if(in_array('eblast', $update)) {
-		echo "<p>Eblast Image: </p>";
-		echo "<p><a href=\"http://localhost/ad2orlando.org/" . $eblastInfo['path'] . "/" . $eblastInfo['img'] . "\" target=\"_blank\"><img src=\"http://localhost/ad2orlando.org/" . $eblastInfo['path'] . "/" . $eblastInfo['img'] . "\" width=\"125\"></a></p>";
-		echo "<p>Eblast Link: <a href=\"" . $eblastInfo['link'] . "\" target=\"_blank\">" . $eblastInfo['link'] . "</a></p>";
-		echo "<p>Eblast File: <a href=\"http://localhost/ad2orlando.org/" . $eblastInfo['path'] . "/eblast.htm\" target=\"_blank\">Click Here</a></p>";
+?>
+		<p>Eblast Image: </p>
+		<p><a href="http://localhost/ad2orlando.org/<?php echo $eblastInfo['path'] . "/" . $eblastInfo['img']; ?>" target="_blank"><img src="http://localhost/ad2orlando.org/<?php echo $eblastInfo['path'] . "/" . $eblastInfo['img']; ?>" width="125"></a></p>
+		<p>Eblast Link: <a href="<?php echo $eblastInfo['link']; ?>" target="_blank"><?php echo $eblastInfo['link']; ?></a></p>
+		<p>Eblast File: <a href="http://localhost/ad2orlando.org/<?php echo $eblastInfo['path']; ?>/eblast.htm" target="_blank">Click Here</a></p>
 
+<?php
 		echo "Copy this code and paste into MyEmma:<br><br>";
 		echo htmlspecialchars($event->getEblastHtml());
 	}

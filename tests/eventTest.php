@@ -48,6 +48,91 @@ class EventTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('http://test.com', $testLink);
 	}
 
+	public function testStatus()
+	{
+		$event = new Event;
+		$status = "This is a test status.";
+		$event->setStatus($status);
+
+		$testStatus = $event->getStatus();
+
+		$this->assertEquals($status, $testStatus);
+	}
+
+	public function testGetInfo()
+	{
+		$event = new Event;
+		$imgFile = array('name'		=> 'test.jpg',
+						 'tmp_name' => '12345.jpg',
+						 'type'		=> 'image/jpeg');
+		$event->setFile('eblast', $imgFile);
+
+		$path = 'mailings/events/2012/03';
+		$event->setPath('eblast', $path);
+
+		$link = 'http://test.com';
+		$event->setLink('eblast', $link);
+
+		$eblastInfo = $event->getInfo('eblast');
+
+		$testEblastInfo = array('img'  => 'test.jpg', 
+					  			'link' => 'http://test.com',
+								'path' => 'mailings/events/2012/03');
+
+		$this->assertEquals($testEblastInfo, $eblastInfo);
+	}
+
+	public function testParseFile()
+	{
+		//Create mock object
+		$event = $this->getMock('Event', array('_uploadFile', '_createEblastFile'));
+
+		//Stub out methods to return specified values
+        $event->expects($this->any())
+              ->method('_uploadFile')
+              ->will($this->returnValue(null));
+
+        $event->expects($this->any())
+              ->method('_createEblastFile')
+              ->will($this->returnValue(null));
+
+		//Create ReflectionClass
+		$refEvent = new ReflectionClass($event);
+		$parseFile = $refEvent->getMethod('_parseFile');
+		$parseFile->setAccessible("true");
+
+		$this->assertFalse($parseFile->invoke($event, 'banner'));
+		$this->assertFalse($parseFile->invoke($event, 'eblast'));
+
+		$imgFile = array('name'		=> 'test.jpg',
+						 'tmp_name' => '12345.jpg',
+						 'type'		=> 'image/jpeg');
+		$event->setFile('eblast', $imgFile);
+
+		$path = 'mailings/events/2012/03';
+		$event->setPath('eblast', $path);
+
+		$link = 'http://test.com';
+		$event->setLink('eblast', $link);
+
+		$eblastInfo = $event->getInfo('eblast');
+
+		$testEblastInfo = array('img'  => 'test.jpg', 
+					  			'link' => 'http://test.com',
+								'path' => 'mailings/events/2012/03');
+
+		$parseFile->invoke($event, 'eblast');
+
+		$testHtml = file_get_contents(dirname(__FILE__) . '/files/eblast_3.txt');
+		$testHtml = trim($testHtml);
+
+		$html = $event->getEblastHtml();
+		$this->assertEquals($testHtml, $html);
+	}
+
+	public function testSetDirectory()
+	{}
+
 	public function testGetBannerInfo()
 	{
 		$event = new Event;
@@ -108,17 +193,6 @@ class EventTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($testInfo, $eblastInfo);
 	}
 
-	public function testStatus()
-	{
-		$event = new Event;
-		$status = "This is a test status.";
-		$event->setStatus($status);
-
-		$testStatus = $event->getStatus();
-
-		$this->assertEquals($status, $testStatus);
-	}
-
 	public function testEblastHtml()
 	{
 		$event = new Event;
@@ -149,7 +223,7 @@ class EventTest extends PHPUnit_Framework_TestCase
               ->will($this->returnValue(null));
 
 		$refEvent = new ReflectionClass($event);
-		$getDirectory = $refEvent->getMethod('_getDirectory');
+		$getDirectory = $refEvent->getMethod('_setDirectory');
 		$getDirectory->setAccessible("true");
 
 		$testDirectory = $getDirectory->invoke($event, 'eblast', 'Test Event');
@@ -161,7 +235,7 @@ class EventTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($directory, $testDirectory);
 	}
 
-	public function testCreateEvent()
+	public function testUpload()
 	{
 		//Create mock object
 		$event = $this->getMock('Event', array('_uploadFile', 'setEblastHtml', '_createDirectory', '_createEblastFile'));
@@ -183,7 +257,7 @@ class EventTest extends PHPUnit_Framework_TestCase
               ->method('_createEblastFile')
               ->will($this->returnValue(null));
 
-		$this->assertFalse($event->createEvent('Test Event'));
+		$this->assertFalse($event->upload('Test Event'));
 
 		$imgFile = array('name'		=> 'test.gif',
 						 'tmp_name' => '12345.gif',
@@ -192,7 +266,7 @@ class EventTest extends PHPUnit_Framework_TestCase
 		$event->setFile('banner', $imgFile);
 		$status = "The files uploaded must be jpeg format.";
 
-		$this->assertFalse($event->createEvent('Test Event'));
+		$this->assertFalse($event->upload('Test Event'));
 		$this->assertEquals($status, $event->getStatus());
 
 		$imgFile = array('name'		=> 'test.jpg',
@@ -200,7 +274,7 @@ class EventTest extends PHPUnit_Framework_TestCase
 						 'type'		=> 'image/jpeg');
 
 		$event->setFile('banner', $imgFile);
-		$event->createEvent('Test Event');
+		$event->upload('Test Event');
 		$status = "File successfully uploaded.";
 
 		$this->assertEquals($status, $event->getStatus());
@@ -209,7 +283,7 @@ class EventTest extends PHPUnit_Framework_TestCase
 						 'tmp_name' => '12345.jpg',
 						 'type'		=> 'image/jpeg');
 		$event->setFile('eblast', $imgFile);
-		$event->createEvent('Test Event');
+		$event->upload('Test Event');
 
 		$this->assertEquals($status, $event->getStatus());
 	}

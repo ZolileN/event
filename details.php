@@ -26,10 +26,10 @@ if(isset($_POST['id'])) {
 		}
 	}
 
-	$event->createEvent($_FILES[$name]);
+	$event->upload($_FILES[$name]);
 
 	if(!empty($update)) {
-		$database->update($update, $_POST['id']);
+		$database->upload($update, $_POST['id']);
 	}
 
 	$result = $database->select($_POST['id']);
@@ -57,19 +57,26 @@ while($row = mysql_fetch_array($result)) {
 	$event->setPath('eblast', $row['eblast_path']);
 	$event->setLink('eblast', $row['eblast_link']);
 	$event->setEblastHtml();
+?>
 
+<?php
 	if(!empty($row['banner_image'])) {
-		echo $row['name'] . "<br>";
-		echo "<p>Banner Image: </p>";
-		echo "<p><a href=\"http://localhost/ad2orlando.org/" . $row['banner_path'] . "/" . $row['banner_image'] . "\" target=\"_blank\"><img src=\"http://localhost/ad2orlando.org/" . $row['banner_path'] . "/" . $row['banner_image'] . "\" width=\"125\"></a></p>";
-		echo "<p>Banner Link: <a href=\"" . $row['banner_link'] . "\" target=\"_blank\">" . $row['banner_link'] . "</a></p>";
+?>
+		<h1><?php echo $row['name'] ?></h1>
+		<p>Banner Image: </p>
+		<p><a href="http://localhost/ad2orlando.org/<?php echo $row['banner_path'] . "/" . $row['banner_image']; ?>" target="_blank"><img src="http://localhost/ad2orlando.org/<?php echo $row['banner_path'] . "/" . $row['banner_image']; ?>" width="125"></a></p>
+		<p>Banner Link: <a href="<?php echo $row['banner_link']; ?>" target="_blank"><?php echo $row['banner_link'] ?></a></p>
+<?php
 	}
 
 	if(!empty($row['eblast_image'])) {
-		echo "<p>Eblast Image: </p>";
-		echo "<p><a href=\"http://localhost/ad2orlando.org/" . $row['eblast_path'] . "/" . $row['eblast_image'] . "\" target=\"_blank\"><img src=\"http://localhost/ad2orlando.org/" . $row['eblast_path'] . "/" . $row['eblast_image'] . "\" width=\"125\"></a></p>";
-		echo "<p>Eblast Link: <a href=\"http://localhost/ad2orlando.org" . $row['eblast_link'] . "\" target=\"_blank\">" . $row['eblast_link'] . "</a></p>";
-		echo "<p>Eblast File: <a href=\"http://localhost/ad2orlando.org/" . $row['eblast_path'] . "/eblast.htm\" target=\"_blank\">Click Here</a></p>";
+?>
+		<p>Eblast Image: </p>
+		<p><a href="http://localhost/ad2orlando.org/<?php echo $row['eblast_path'] . "/" . $row['eblast_image']; ?>" target="_blank"><img src="http://localhost/ad2orlando.org/<?php echo $row['eblast_path'] . "/" . $row['eblast_image']; ?>" width="125"></a></p>
+		<p>Eblast Link: <a href="<?php echo $row['eblast_link']; ?>" target="_blank"><?php echo $row['eblast_link']; ?></a></p>
+		<p>Eblast File: <a href="http://localhost/ad2orlando.org/<?php echo $row['eblast_path']; ?>/eblast.htm" target="_blank">Click Here</a></p>
+
+<?php
 
 		echo "Copy this code and paste into MyEmma:<br><br>";
 		echo htmlspecialchars($event->getEblastHtml());

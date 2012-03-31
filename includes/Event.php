@@ -118,62 +118,6 @@ class Event
 	}
 
 	/*
-	 * Get the specified properties
-	 * 
-	 * @param  string $type
-	 * @return array
-	 */
-	public function getInfo($type)
-	{
-		$propertyImg  = "_". $type . "Img";
-		$propertyLink = "_". $type . "Link";
-		$propertyPath = "_". $type . "Path";
-
-		$info = array('img'  => $this->$propertyImg, 
-					  'link' => $this->$propertyLink,
-					  'path' => $this->$propertyPath);
-
-		return $info;	
-	}
-
-	/*
-	 * Upload file
-	 * 
-	 * @param  string $type
-	 */
-	protected function _uploadFile($type) {
-		$path = $this->getPath($type);
-		$file = $this->getFile($type);
-		$file_tmp_name = $file["tmp_name"];
-		$file_name = $file["name"];
-
-		move_uploaded_file($file_tmp_name, dirname(__FILE__) . "/../../$path/$file_name");
-	}
-
-	/*
-	 * Parses and uploads file
-	 * 
-	 * @param string $type 
-	 * @param array $name 
-	 */
-	protected function _parseFile($type, $name) {
-		$path = $this->getPath($type, $name);
-
-		if($path === false) {
-			return false;
-		}
-
-		$this->_uploadFile($type);
-
-		if($type === 'email') {
-			$this->setEblastHtml();
-			$html = $this->getEblastHtml();
-			$handle = $this->_createEblastFile($directory, $html);	
-		}
-
-	}
-
-	/*
 	 * Set status property
 	 * 
 	 * @param  string $status
@@ -224,14 +168,70 @@ class Event
 	}
 
 	/*
+	 * Get the specified properties
+	 * 
+	 * @param  string $type
+	 * @return array
+	 */
+	public function getInfo($type)
+	{
+		$propertyImg  = "_". $type . "Img";
+		$propertyLink = "_". $type . "Link";
+		$propertyPath = "_". $type . "Path";
+
+		$info = array('img'  => $this->$propertyImg, 
+					  'link' => $this->$propertyLink,
+					  'path' => $this->$propertyPath);
+
+		return $info;	
+	}
+
+	/*
+	 * Upload file
+	 * 
+	 * @param  string $type
+	 */
+	protected function _uploadFile($type) {
+		$path = $this->getPath($type);
+		$file = $this->getFile($type);
+		$file_tmp_name = $file["tmp_name"];
+		$file_name = $file["name"];
+
+		move_uploaded_file($file_tmp_name, dirname(__FILE__) . "/../../$path/$file_name");
+	}
+
+	/*
+	 * Parses and uploads file
+	 * 
+	 * @param string $type 
+	 */
+	protected function _parseFile($type) {
+		$path = $this->getPath($type);
+
+		if(!$path) {
+			return false;
+		}
+
+		$this->_uploadFile($type);
+
+		if($type === 'eblast') {
+			$this->setEblastHtml();
+			$html = $this->getEblastHtml();
+			$path = $this->getPath($type);
+			$handle = $this->_createEblastFile($path, $html);	
+		}
+
+	}
+
+	/*
 	 * Create eBlast file for future use
 	 * 
-	 * @param string $directory	Path to where the file is created 
-	 * @param string $html		HTML to write to the file 
+	 * @param string $path	Path to where the file is created 
+	 * @param string $html	HTML to write to the file 
 	 */
-	protected function _createEblastFile($directory, $html)
+	protected function _createEblastFile($path, $html)
 	{
-		$handle = fopen(dirname(__FILE__) . "/../../$directory/eblast.htm", 'w') or die("Can't open eblast file");
+		$handle = fopen(dirname(__FILE__) . "/../../$path/eblast.htm", 'w') or die("Can't open eblast file");
 		fwrite($handle, $html);
 		fclose($handle);	
 	}
@@ -253,7 +253,7 @@ class Event
 	 * @param  string $name Event name
 	 * @return string
 	 */
-	protected function _getDirectory($type, $name)
+	protected function _setDirectory($type, $name)
 	{
 		$year = date('Y');
 		$month = date('m');
@@ -326,11 +326,11 @@ class Event
 	}
 
 	/*
-	 * Create a new event
+	 * Upload image files
 	 * 
-	 * @param string $name Event name 
+	 * @param string $name Event Name
 	 */
-	public function createEvent($name)
+	public function upload($name = null)
 	{
 		$eblastFile = $this->getFile('eblast');
 		$bannerFile = $this->getFile('banner');
@@ -350,18 +350,19 @@ class Event
 
 		} else {
 			if(!empty($bannerFile)) {
-				$this->_parseFile('banner', $name);
+				(!$name) ? : $this->_setDirectory('banner', $name);
+				$this->_parseFile('banner');
 			}
 
 			if(!empty($eblastFile)) {
-				$this->_parseFile('eblast', $name);
+				(!$name) ? : $this->_setDirectory('eblast', $name);
+				$this->_parseFile('eblast');
 			}
 
 			$message = "File successfully uploaded.";
 			$this->setStatus($message);
 
 		}
-
 	}
 
 }
