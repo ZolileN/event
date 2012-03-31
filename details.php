@@ -17,6 +17,8 @@ if(isset($_POST['id'])) {
 		}
 	}
 
+	($_POST['banner_active']) ? $update['banner_active'] = 1 : $update['banner_active'] = 0;
+
 	foreach($_FILES as $name => $values) {
 		if(!empty($values['name'])) {
 			$type = preg_replace('/_image$/', '', $name);
@@ -29,7 +31,7 @@ if(isset($_POST['id'])) {
 	$event->upload($_FILES[$name]);
 
 	if(!empty($update)) {
-		$database->upload($update, $_POST['id']);
+		$database->update($update, $_POST['id']);
 	}
 
 	$result = $database->select($_POST['id']);
@@ -45,7 +47,6 @@ if(isset($_POST['id'])) {
 <body>
 
 <?php
-
 if(!isset($_GET['delete'])) {
 	echo "<p><a href=\"details.php?id=$_GET[id]&delete=false\">Delete Event</a></p>";
 } elseif(isset($_GET['delete'])) {
@@ -87,6 +88,7 @@ while($row = mysql_fetch_array($result)) {
 	Event Name: <input type="text" name="name" value="<?php echo $row['name']; ?>" /><br>
 	eBlast File: <input type="file" name="eblast_image" /><br>
 	eBlast Link: <input type="text" name="eblast_link" value="<?php if($row['eblast_link']) { echo $row['eblast_link']; } ?>" /><br>
+	Banner Active: <input type="checkbox" name="banner_active" <?php if($row['banner_active'] == 1) { echo "checked=\"checked\""; } ?> /><br>
 	Banner File: <input type="file" name="banner_image" /><br>
 	Banner Link: <input type="text" name="banner_link" value="<?php if($row['banner_link']) { echo $row['banner_link']; } ?>" /><br>
 	<input type="hidden" name="id" value="<?php echo $row['id']; ?>" />

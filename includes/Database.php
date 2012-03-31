@@ -81,7 +81,7 @@ class Database extends Event
 
 		//Loop through values array
 		foreach($values as $key => $value) {
-			if(!empty($value)) {
+			if(!is_null($value)) {
 				$escaped = mysql_real_escape_string($value);
 				//Create two seperate strings for columns and values
 				$sql_set .= "$key='$escaped', ";
