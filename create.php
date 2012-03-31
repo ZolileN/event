@@ -68,10 +68,10 @@ if(isset($message) && !empty($message)) {
 <?php if(empty($update) || isset($created) && $created === false) { ?>
 <form name="event" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
 	Event Name: <input type="text" name="event_name" value="<?php if($_POST['event_name']) { echo $_POST['event_name']; } ?>" /><br>
-	eBlast File: <input type="file" name="eblast_img" /><br>
-	eBlast Link: <input type="text" name="eblast_link" value="<?php if($_POST['eblast_link']) { echo $_POST['eblast_link']; } ?>" /><br>
 	Banner File: <input type="file" name="banner_img" /><br>
 	Banner Link: <input type="text" name="banner_link" value="<?php if($_POST['banner_link']) { echo $_POST['banner_link']; } ?>" /><br>
+	eBlast File: <input type="file" name="eblast_img" /><br>
+	eBlast Link: <input type="text" name="eblast_link" value="<?php if($_POST['eblast_link']) { echo $_POST['eblast_link']; } ?>" /><br>
 	<input type="submit" value="Submit" />
 </form>
 <?php } ?>

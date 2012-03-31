@@ -86,11 +86,11 @@ while($row = mysql_fetch_array($result)) {
 ?>
 <form name="event" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
 	Event Name: <input type="text" name="name" value="<?php echo $row['name']; ?>" /><br>
-	eBlast File: <input type="file" name="eblast_image" /><br>
-	eBlast Link: <input type="text" name="eblast_link" value="<?php if($row['eblast_link']) { echo $row['eblast_link']; } ?>" /><br>
 	Banner Active: <input type="checkbox" name="banner_active" <?php if($row['banner_active'] == 1) { echo "checked=\"checked\""; } ?> /><br>
 	Banner File: <input type="file" name="banner_image" /><br>
 	Banner Link: <input type="text" name="banner_link" value="<?php if($row['banner_link']) { echo $row['banner_link']; } ?>" /><br>
+	eBlast File: <input type="file" name="eblast_image" /><br>
+	eBlast Link: <input type="text" name="eblast_link" value="<?php if($row['eblast_link']) { echo $row['eblast_link']; } ?>" /><br>
 	<input type="hidden" name="id" value="<?php echo $row['id']; ?>" />
 	<input type="submit" value="Submit" />
 </form>
