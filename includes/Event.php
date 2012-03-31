@@ -138,6 +138,24 @@ class Event
 	}
 
 	/*
+	 * Get date
+	 * 
+	 * @return array
+	 */
+	protected function _getDate()
+	{
+		$year = date('Y');
+		$month = date('m');
+		$day = date('d');
+
+		$date = array('year'  => $year,
+				 	  'month' => $month,
+				 	  'day'	  => $day);
+
+		return $date;	
+	}
+
+	/*
 	 * Set eBlast HTML
 	 * 
 	 */
@@ -255,9 +273,7 @@ class Event
 	 */
 	protected function _setDirectory($type, $name)
 	{
-		$year = date('Y');
-		$month = date('m');
-		$day = date('d');
+		$date = $this->_getDate();
 
 		if(empty($name)) {
 			$this->setStatus("Event name was not submitted.");
@@ -282,19 +298,19 @@ class Event
 				$this->_createDirectory("/../../mailings/events");
 			}
 
-			if(!file_exists(dirname(__FILE__) . "/../../mailings/events/$year")) {
-				$this->_createDirectory("/../../mailings/events/$year");
+			if(!file_exists(dirname(__FILE__) . "/../../mailings/events/$date[year]")) {
+				$this->_createDirectory("/../../mailings/events/$date[year]");
 			}
 
-			if(!file_exists(dirname(__FILE__) . "/../../mailings/events/$year/$month")) {
-				$this->_createDirectory("/../../mailings/events/$year/$month");
+			if(!file_exists(dirname(__FILE__) . "/../../mailings/events/$date[year]/$date[month]")) {
+				$this->_createDirectory("/../../mailings/events/$date[year]/$date[month]");
 			}
 
-			if(!file_exists(dirname(__FILE__) . "/../../mailings/events/$year/$month/$eventDir")) {
-				$this->_createDirectory("/../../mailings/events/$year/$month/$eventDir");
+			if(!file_exists(dirname(__FILE__) . "/../../mailings/events/$date[year]/$date[month]/$eventDir")) {
+				$this->_createDirectory("/../../mailings/events/$date[year]/$date[month]/$eventDir");
 			}
 
-			$directory = "mailings/events/$year/$month/$eventDir";
+			$directory = "mailings/events/$date[year]/$date[month]/$eventDir";
 
 		}
 
@@ -308,15 +324,15 @@ class Event
 				$this->_createDirectory("/../../images/events");
 			}
 
-			if(!file_exists(dirname(__FILE__) . "/../../images/events/$year")) {
-				$this->_createDirectory("/../../images/events/$year");
+			if(!file_exists(dirname(__FILE__) . "/../../images/events/$date[year]")) {
+				$this->_createDirectory("/../../images/events/$date[year]");
 			}
 
-			if(!file_exists(dirname(__FILE__) . "/../../images/events/$year/$eventDir")) {
-				$this->_createDirectory("/../../images/events/$year/$eventDir");
+			if(!file_exists(dirname(__FILE__) . "/../../images/events/$date[year]/$eventDir")) {
+				$this->_createDirectory("/../../images/events/$date[year]/$eventDir");
 			}
 
-			$directory = "images/events/$year/$eventDir";
+			$directory = "images/events/$date[year]/$eventDir";
 
 		}
 

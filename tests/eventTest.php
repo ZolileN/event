@@ -131,7 +131,49 @@ class EventTest extends PHPUnit_Framework_TestCase
 	}
 
 	public function testSetDirectory()
-	{}
+	{
+		//Create mock object
+		$event = $this->getMock('Event', array('_createDirectory', '_getDate'));
+
+        $event->expects($this->any())
+              ->method('_createDirectory')
+              ->will($this->returnValue(null));
+
+		$date = array('year'  => '2012',
+				 	  'month' => '03',
+				 	  'day'	  => '01');
+
+        $event->expects($this->any())
+              ->method('_getDate')
+              ->will($this->returnValue($date));
+
+		//Create ReflectionClass
+		$refEvent = new ReflectionClass($event);
+		$setDirectory = $refEvent->getMethod('_setDirectory');
+		$setDirectory->setAccessible("true");
+
+		$this->assertFalse($setDirectory->invoke($event, 'eblast', ''));
+
+		$setDirectory->invoke($event, 'eblast', 'Test Name');
+		$status = "Event name was not submitted.";
+		$this->assertEquals($status, $event->getStatus());
+
+		$this->assertFalse($setDirectory->invoke($event, 'testing', 'Test Name'));
+		$status = "Event is neither eblast or banner";
+		$this->assertEquals($status, $event->getStatus());
+
+		$testPath = 'mailings/events/2012/03/test-name';
+		$path = $setDirectory->invoke($event, 'eblast', 'Test Name');
+		$this->assertEquals($testPath, $path);
+
+		$testPath = 'images/events/2012/test-name';
+		$path = $setDirectory->invoke($event, 'banner', 'Test Name');
+		$this->assertEquals($testPath, $path);
+
+		$testPath = 'mailings/events/2012/03/test-name';
+		$path = $setDirectory->invoke($event, 'eblast', 'Test Name');
+		$this->assertEquals($testPath, $path);
+	}
 
 	public function testGetBannerInfo()
 	{
