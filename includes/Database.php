@@ -4,15 +4,19 @@ require_once dirname(__FILE__) . '/Event.php';
 
 class Database extends Event
 {
+	private $_host = 'localhost';
+	private $_database = 'ad2orlando';
+	private $_username = 'root';
+	private $_password = 'test1234';
 
 	public function select($id = null) 
 	{
-		$con = mysql_connect("localhost","root","test1234");
+		$con = mysql_connect($this->_host, $this->_username, $this->_password);
 		if (!$con) {
 		  die('Could not connect: ' . mysql_error());
 		}
 
-		mysql_select_db("ad2orlando", $con);
+		mysql_select_db($this->_database, $con);
 
 		if(!empty($id)) {
 			$sql = "SELECT * FROM events WHERE id = $id";
@@ -32,12 +36,12 @@ class Database extends Event
 	public function insert($values) 
 	{
 		//Connect to the database and select the table
-		$con = mysql_connect("localhost","root","test1234");
+		$con = mysql_connect($this->_host, $this->_username, $this->_password);
 		if (!$con) {
 		  die('Could not connect: ' . mysql_error());
 		}
 
-		mysql_select_db("ad2orlando", $con);
+		mysql_select_db($this->_database, $con);
 
 		//Begin the insert sql string
 		$sql = "INSERT INTO events ";
@@ -69,12 +73,12 @@ class Database extends Event
 	public function update($values, $id) 
 	{
 		//Connect to the database and select the table
-		$con = mysql_connect("localhost","root","test1234");
+		$con = mysql_connect($this->_host, $this->_username, $this->_password);
 		if (!$con) {
 		  die('Could not connect: ' . mysql_error());
 		}
 
-		mysql_select_db("ad2orlando", $con);
+		mysql_select_db($this->_database, $con);
 
 		//Begin the insert sql string
 		$sql = "UPDATE events SET ";
@@ -103,12 +107,12 @@ class Database extends Event
 
 	public function delete($id) 
 	{
-		$con = mysql_connect("localhost","root","test1234");
+		$con = mysql_connect($this->_host, $this->_username, $this->_password);
 		if (!$con) {
 		  die('Could not connect: ' . mysql_error());
 		}
 
-		mysql_select_db("ad2orlando", $con);
+		mysql_select_db($this->_database, $con);
 
 		$sql = "DELETE FROM events WHERE id = $id";
 

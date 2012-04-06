@@ -97,7 +97,7 @@ class Event
 	{
 		if(!empty($link)) {
 
-			if(!preg_match('/^http:\/\//', $link)) {
+			if (!preg_match('/^http:\/\//', $link)) {
 				$link = 'http://' . $link;
 			}
 
@@ -226,13 +226,13 @@ class Event
 	protected function _parseFile($type) {
 		$path = $this->getPath($type);
 
-		if(!$path) {
+		if (!$path) {
 			return false;
 		}
 
 		$this->_uploadFile($type);
 
-		if($type === 'eblast') {
+		if ($type === 'eblast') {
 			$this->setEblastHtml();
 			$html = $this->getEblastHtml();
 			$path = $this->getPath($type);
@@ -275,7 +275,7 @@ class Event
 	{
 		$date = $this->_getDate();
 
-		if(empty($name)) {
+		if (empty($name)) {
 			$this->setStatus("Event name was not submitted.");
 			return false;
 		}
@@ -283,30 +283,30 @@ class Event
 		$nameUpdated = preg_replace("/[^a-zA-Z0-9\s]/", "", strtolower($name));
 		$eventDir = str_replace(" ", "-", $nameUpdated);
 
-		if(empty($type) || $type !== 'eblast' && $type !== 'banner') {
+		if (empty($type) || $type !== 'eblast' && $type !== 'banner') {
 			$this->setStatus("Event is neither eblast or banner");
 			return false;
 		}
 
-		if($type === 'eblast') {
+		if ($type === 'eblast') {
 
-			if(!file_exists(dirname(__FILE__) . "/../../mailings")) {
+			if (!file_exists(dirname(__FILE__) . "/../../mailings")) {
 				$this->_createDirectory("/../../mailings");
 			}
 
-			if(!file_exists(dirname(__FILE__) . "/../../mailings/events")) {
+			if (!file_exists(dirname(__FILE__) . "/../../mailings/events")) {
 				$this->_createDirectory("/../../mailings/events");
 			}
 
-			if(!file_exists(dirname(__FILE__) . "/../../mailings/events/$date[year]")) {
+			if (!file_exists(dirname(__FILE__) . "/../../mailings/events/$date[year]")) {
 				$this->_createDirectory("/../../mailings/events/$date[year]");
 			}
 
-			if(!file_exists(dirname(__FILE__) . "/../../mailings/events/$date[year]/$date[month]")) {
+			if (!file_exists(dirname(__FILE__) . "/../../mailings/events/$date[year]/$date[month]")) {
 				$this->_createDirectory("/../../mailings/events/$date[year]/$date[month]");
 			}
 
-			if(!file_exists(dirname(__FILE__) . "/../../mailings/events/$date[year]/$date[month]/$eventDir")) {
+			if (!file_exists(dirname(__FILE__) . "/../../mailings/events/$date[year]/$date[month]/$eventDir")) {
 				$this->_createDirectory("/../../mailings/events/$date[year]/$date[month]/$eventDir");
 			}
 
@@ -314,21 +314,21 @@ class Event
 
 		}
 
-		if($type === 'banner') {
+		if ($type === 'banner') {
 
-			if(!file_exists(dirname(__FILE__) . "/../../images")) {
+			if (!file_exists(dirname(__FILE__) . "/../../images")) {
 				$this->_createDirectory("/../../images");
 			}
 
-			if(!file_exists(dirname(__FILE__) . "/../../images/events")) {
+			if (!file_exists(dirname(__FILE__) . "/../../images/events")) {
 				$this->_createDirectory("/../../images/events");
 			}
 
-			if(!file_exists(dirname(__FILE__) . "/../../images/events/$date[year]")) {
+			if (!file_exists(dirname(__FILE__) . "/../../images/events/$date[year]")) {
 				$this->_createDirectory("/../../images/events/$date[year]");
 			}
 
-			if(!file_exists(dirname(__FILE__) . "/../../images/events/$date[year]/$eventDir")) {
+			if (!file_exists(dirname(__FILE__) . "/../../images/events/$date[year]/$eventDir")) {
 				$this->_createDirectory("/../../images/events/$date[year]/$eventDir");
 			}
 
@@ -351,7 +351,7 @@ class Event
 		$eblastFile = $this->getFile('eblast');
 		$bannerFile = $this->getFile('banner');
 
-		if(empty($eblastFile) && empty($bannerFile)) {
+		if (empty($eblastFile) && empty($bannerFile)) {
 			$message = "No images were submitted.";
 			return false;
 		}
@@ -365,13 +365,17 @@ class Event
 			return false;
 
 		} else {
-			if(!empty($bannerFile)) {
-				(!$name) ? : $this->_setDirectory('banner', $name);
+			if (!empty($bannerFile)) {
+				if ($name) {
+					$this->_setDirectory('banner', $name);
+				}
 				$this->_parseFile('banner');
 			}
 
-			if(!empty($eblastFile)) {
-				(!$name) ? : $this->_setDirectory('eblast', $name);
+			if (!empty($eblastFile)) {
+				if ($name) {
+					$this->_setDirectory('eblast', $name);
+				}
 				$this->_parseFile('eblast');
 			}
 
