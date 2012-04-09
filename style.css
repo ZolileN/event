@@ -1,0 +1,41 @@
+form {
+	width:400px;
+}
+
+form label { 
+	display: block; 
+	float:left; 
+	width:140px;
+}	
+form input { 
+	float:left; 
+	margin:2px 0 20px 10px;		
+	width:200px;
+}	
+
+form button {
+	margin-left: 150px;
+	width:125px;
+	height:31px;
+	font-weight:bold;
+	color:#FFFFFF;
+	background-color:#666666;
+	border: 0px;
+}
+
+.detail_blurb {
+	float:left;
+	width:250px;
+}
+
+.detail_eblast_html {
+	width:600px;
+}
+
+.float_clear {
+	clear:both;
+}
+
+.details {
+	display:none;
+}

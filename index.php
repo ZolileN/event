@@ -14,7 +14,7 @@ $result = $database->select();
 <!DOCTYPE html>
 <html>
 <head>
-
+<link href="style.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 
@@ -23,7 +23,15 @@ $result = $database->select();
 <?php
 
 while($row = mysql_fetch_array($result)) {
-echo "[ <a href=\"details.php?id=" . $row['id'] . "\">DETAILS</a> ] " . $row['name'] . " " . $row['date'] . "<br>";
+	if($row['banner'] === 1) {
+		$active = true;
+	}
+
+	echo "[ <a href=\"details.php?id=" . $row['id'] . "\">Details</a> ] " . $row['name'];
+	if($row['banner_active'] == 1) {
+		echo " [active]";
+	}	
+	echo "<br>";
 }
 
 ?>
