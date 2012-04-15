@@ -67,7 +67,8 @@ if(isset($_FILES["eblast_img"]) || isset($_FILES["banner_img"])) {
 <link href="style.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<p><a href="index.php">Back to Main</a></p>
+<div id="events_container">
+<p><span class="button"><a href="index.php">Back to Main</a></span></p>
 
 <?php
 if(isset($message) && !empty($message)) {
@@ -144,5 +145,6 @@ if($created !== false) {
 		}
 	});
 </script>
+</div>
 </body>
 </html>

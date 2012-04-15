@@ -17,8 +17,10 @@ $result = $database->select();
 <link href="style.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-
-<p><a href="create.php">Create a New Event</a></p>
+<div id="events_container">
+<p>
+<span class="button"><a href="create.php">Create a New Event</a></span>
+</p>
 
 <?php
 
@@ -35,6 +37,6 @@ while($row = mysql_fetch_array($result)) {
 }
 
 ?>
-
+</div>
 </body>
 </html>

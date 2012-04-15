@@ -50,8 +50,8 @@ if(isset($_POST['id'])) {
 <link href="style.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-
-<p><a href="index.php">Back to Main</a></p>
+<div id="events_container">
+<p><span class="button"><a href="index.php">Back to Main</a></span></p>
 
 <?php
 $message = $event->getStatus();
@@ -78,12 +78,12 @@ while($row = mysql_fetch_array($result)) {
 
 <?php
 	if(!isset($_GET['delete'])) {
-		echo "<p><a href=\"details.php?id=$_GET[id]&delete=false\">Delete Event</a></p>";
+		echo "<p><span class=\"button\"><a href=\"details.php?id=$_GET[id]&delete=false\">Delete Event</a></span></p>";
 	} elseif(isset($_GET['delete'])) {
 		echo "<p>Are you sure you want to delete this event? <a href=\"index.php?id=$_GET[id]&&delete=true\">Yes</a> <a href=\"details.php?id=$_GET[id]\">No</a></p>";
 	}
 ?>
-<p><a href="#" class="edit">Edit Event</a></p>
+<p><span class="button"><a href="#" class="edit">Edit Event</a></span></p>
 <p class="error"><p>
 <form name="event" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data" class="details">
 	<label>
@@ -165,5 +165,6 @@ while($row = mysql_fetch_array($result)) {
 		}
 	});
 </script>
+</div>
 </body>
 </html>
