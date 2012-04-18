@@ -1,4 +1,5 @@
 <?php
+include("../includes/header.php"); 
 require_once dirname(__FILE__) . '/includes/Event.php';
 require_once dirname(__FILE__) . '/includes/Database.php';
 
@@ -60,76 +61,86 @@ if(isset($_FILES["eblast_img"]) || isset($_FILES["banner_img"])) {
 }
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
 <link href="style.css" rel="stylesheet" type="text/css" />
-</head>
-<body>
-<div id="events_container">
-<p><span class="button"><a href="index.php">Back to Main</a></span></p>
 
-<?php
-if(isset($message) && !empty($message)) {
-	echo "<p>$message</p>";
-}
+<div class="ContentHeaderLeft">
 
-if(empty($update) || isset($created) && $created === false) { ?>
-<p class="error"><p>
-<form name="event" method="post" action="" enctype="multipart/form-data" class="create">
-	<label>
-		Event Name:
-	</label>
-	<input type="text" name="event_name" id="event_name" value="<?php if($_POST['event_name']) { echo $_POST['event_name']; } ?>" />
+	<div class="ContentHeaderPaddingLeft">COMMUNICATIONS</div>
 
-	<label>
-		Banner File:
-	</label>
-	<input type="file" name="banner_img" id="banner_img" />
+</div>
 
-	<label>
-		Banner Link: 
-	</label>
-	<input type="text" name="banner_link" id="banner_link" value="<?php if($_POST['banner_link']) { echo $_POST['banner_link']; } ?>" />
+<div class="MainPadding">
 
-	<label>
-		eBlast File: 
-	</label>
-	<input type="file" name="eblast_img" id="eblast_img" />
+	<div id="container">
+	<p><span class="button"><a href="index.php">Back to Main</a></span></p>
 
-	<label>
-		eBlast Link: 
-	</label>
-	<input type="text" name="eblast_link" id="eblast_link" value="<?php if($_POST['eblast_link']) { echo $_POST['eblast_link']; } ?>" />
-
-	<button type="submit">Submit</button>
-</form>
-<?php } ?>
-
-<?php
-if($created !== false) {
-	if(in_array('banner', $update)) {
-?>
-		<p>Banner Image: </p>
-		<p><a href="http://localhost/ad2orlando.org/<?php echo $bannerInfo['path'] . "/" . $bannerInfo['img']; ?>" target="_blank"><img src="http://localhost/ad2orlando.org/<?php echo $bannerInfo['path'] . "/" . $bannerInfo['img']; ?>" width="125"></a></p>
-		<p>Banner Link: <a href="<?php echo $bannerInfo['link']; ?>" target="_blank"><?php echo $bannerInfo['link']; ?></a></p>
-<?php
+	<?php
+	if(isset($message) && !empty($message)) {
+		echo "<p>$message</p>";
 	}
 
-	if(in_array('eblast', $update)) {
-?>
-		<p>Eblast Image: </p>
-		<p><a href="http://localhost/ad2orlando.org/<?php echo $eblastInfo['path'] . "/" . $eblastInfo['img']; ?>" target="_blank"><img src="http://localhost/ad2orlando.org/<?php echo $eblastInfo['path'] . "/" . $eblastInfo['img']; ?>" width="125"></a></p>
-		<p>Eblast Link: <a href="<?php echo $eblastInfo['link']; ?>" target="_blank"><?php echo $eblastInfo['link']; ?></a></p>
-		<p>Eblast File: <a href="http://localhost/ad2orlando.org/<?php echo $eblastInfo['path']; ?>/eblast.htm" target="_blank">Click Here</a></p>
+	if(empty($update) || isset($created) && $created === false) { ?>
+	<p class="error"><p>
+	<form name="event" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data" class="create">
+		<label>
+			Event Name:
+		</label>
+		<input type="text" name="event_name" id="event_name" value="<?php if($_POST['event_name']) { echo $_POST['event_name']; } ?>" />
 
-<?php
-		echo "Copy this code and paste into MyEmma:<br><br>";
-		echo htmlspecialchars($event->getEblastHtml());
+		<label>
+			Banner File:
+		</label>
+		<input type="file" name="banner_img" id="banner_img" />
+
+		<label>
+			Banner Link: 
+		</label>
+		<input type="text" name="banner_link" id="banner_link" value="<?php if($_POST['banner_link']) { echo $_POST['banner_link']; } ?>" />
+
+		<label>
+			eBlast File: 
+		</label>
+		<input type="file" name="eblast_img" id="eblast_img" />
+
+		<label>
+			eBlast Link: 
+		</label>
+		<input type="text" name="eblast_link" id="eblast_link" value="<?php if($_POST['eblast_link']) { echo $_POST['eblast_link']; } ?>" />
+
+		<button type="submit">Submit</button>
+	</form>
+	<?php } ?>
+
+	<?php
+	if($created !== false) {
+		if(in_array('banner', $update)) {
+	?>
+			<p>Banner Image: </p>
+			<p><a href="http://ad2orlando.org/<?php echo $bannerInfo['path'] . "/" . $bannerInfo['img']; ?>" target="_blank"><img src="http://ad2orlando.org/<?php echo $bannerInfo['path'] . "/" . $bannerInfo['img']; ?>" width="125"></a></p>
+			<p>Banner Link: <a href="<?php echo $bannerInfo['link']; ?>" target="_blank"><?php echo $bannerInfo['link']; ?></a></p>
+	<?php
+		}
+
+		if(in_array('eblast', $update)) {
+	?>
+			<p>Eblast Image: </p>
+			<p><a href="http://ad2orlando.org/<?php echo $eblastInfo['path'] . "/" . $eblastInfo['img']; ?>" target="_blank"><img src="http://ad2orlando.org/<?php echo $eblastInfo['path'] . "/" . $eblastInfo['img']; ?>" width="125"></a></p>
+			<p>Eblast Link: <a href="<?php echo $eblastInfo['link']; ?>" target="_blank"><?php echo $eblastInfo['link']; ?></a></p>
+			<p>Eblast File: <a href="http://ad2orlando.org/<?php echo $eblastInfo['path']; ?>/eblast.htm" target="_blank">Click Here</a></p>
+
+	<?php
+			echo "Copy this code and paste into MyEmma:<br><br>";
+			echo htmlspecialchars($event->getEblastHtml());
+		}
 	}
-}
-?>
+	?>
+	</div>
+
+</div>
+
+<div class="MainContentClear"></div>
+
 <script>
 	$('button').on('click', function() {
 		$('.error').text('');
@@ -145,6 +156,4 @@ if($created !== false) {
 		}
 	});
 </script>
-</div>
-</body>
-</html>
+<?php include("../includes/footer.php") ?>
